@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AlertController, IonContent, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { AccessProviders } from 'src/app/providers/access-providers';
 import * as moment from 'moment';
@@ -11,20 +11,22 @@ import * as moment from 'moment';
   styleUrls: ['./archives.page.scss'],
 })
 export class ArchivesPage implements OnInit {
+  @ViewChild(IonContent) content: IonContent;
   public token;
   public page=1;
-  private limit=10;
+  public limit=10;
   public data;
   public total_pages;
   public server;
   public crossorigin=false;
   public tweets = [];
+  public loaded = false;
 
   constructor(
     private storage: Storage,
     private accsPrvds: AccessProviders,
     private alertController: AlertController,
-    private modalCtrl: ModalController,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit() {
@@ -45,17 +47,19 @@ export class ArchivesPage implements OnInit {
   }
 
   async loadData(e=null) {
-    await this.accsPrvds.showLoader("Please wait....");
+    // await this.accsPrvds.showLoader("Please wait....");
+    this.loaded = false;
     let rnd = Math.floor(Math.random() * 10);
     let params = {
       'nd': rnd
     };
     let body = new HttpParams({fromObject: params});
     this.accsPrvds.token = this.token;
+    this.content.scrollToTop(300);
     return new Promise(resolve => {
       this.accsPrvds.getData('/api/archives/' + this.limit + '/' + this.page, body).subscribe(
         (res:any) => {
-          this.accsPrvds.dismissLoader();
+          // this.accsPrvds.dismissLoader();
           if (e!=null)
             e.target.complete();
           if (typeof res !== 'undefined') {
@@ -83,6 +87,7 @@ export class ArchivesPage implements OnInit {
               // console.log(JSON.parse(res.data.raw_data));
               this.total_pages = Math.ceil(res.total_records / this.limit);
               // console.log(this.tweets);
+              this.loaded = true;
             } else {
               this.accsPrvds.presentToast(res.message);
             }
@@ -156,6 +161,7 @@ export class ArchivesPage implements OnInit {
   }
 
   formatJam(jam) {
+    // console.log(jam);
     return moment(jam).format('DD/MM/YYYY hh:mm');
   }
 
@@ -172,4 +178,5 @@ export class ArchivesPage implements OnInit {
   tampilLog(isi) {
     console.log(isi);
   }
+
 }
