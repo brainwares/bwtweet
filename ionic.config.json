@@ -1,0 +1,7 @@
+{
+  "name": "bwtweet",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
