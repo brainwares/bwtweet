@@ -1,0 +1,134 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Archives Page: {{page}} of {{total_pages}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Pull to reload" refreshingSpinner="circles" refreshingText="Reloading..."></ion-refresher-content>
+  </ion-refresher>
+  <div *ngIf="tweets; else noData">
+    <div *ngFor="let i of tweets; let idx = index">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-card-title>{{ i.core.user_results.result.legacy.name }}</ion-card-title>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img [src]="i.core.user_results.result.legacy.profile_image_url_https"></ion-img>
+            </ion-avatar>
+            <ion-label>{{ i.core.user_results.result.legacy.screen_name }}</ion-label>
+            <ion-note slot="end">{{ formatJam(i.core.user_results.result.legacy.created_at) }}</ion-note>
+          </ion-item>
+          <ion-note color="medium" class="ion-text-wrap">{{ parseText(i) }}</ion-note>
+          <ion-row class="ion-justify-content-start">
+            <ion-col *ngFor="let j of data[idx].media" size-lg="3" size-md="6" size-sm="12" size-xs="12">
+              <video width="100%"[poster]="genPoster(j)" preload="none" controls>
+                <source [src]="genVidUrl(j)"/>
+                Your browser does not support the video tag.
+              </video>
+            </ion-col>
+          </ion-row>
+  
+        </ion-card-content>
+        <ion-button [href]="parseLink(i)" target="_blank" fill="clear">Go To</ion-button>
+        <ion-row class="ion-justify-content-start">
+          <ion-col>
+            <ion-button fill="clear" color="medium" size="small">
+              <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+              {{ i.legacy.reply_count }}
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button fill="clear" [color]="i.retweet_count ? 'primary' : 'medium'" size="small">
+              <ion-icon name="repeat-outline" slot="start"></ion-icon>
+              {{ i.legacy.retweet_count }}
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button fill="clear" [color]="i.favorite_count ? 'primary' : 'medium'" size="small">
+              <ion-icon name="heart-outline" slot="start"></ion-icon>
+              {{ i.legacy.favorite_count }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+<!-- 
+      <ion-row class="wrapper">
+        <ion-col size="2">
+          <ion-avatar>
+            <ion-img [src]="i.core.user_results.result.legacy.profile_image_url_https"></ion-img>
+          </ion-avatar>
+        </ion-col>
+        <ion-col size="10">
+          <ion-row class="tweet-info">
+            <ion-col size="12">
+              <span class="name">{{ i.core.user_results.result.legacy.name }}</span>
+              <span class="handle">{{ i.core.user_results.result.legacy.screen_name }}</span>
+              <span class="handle">- {{ formatJam(i.core.user_results.result.legacy.created_at) }}</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <div [innerHtml]="parseText(i)"></div>
+              <ion-row class="ion-justify-content-start">
+                <ion-col *ngFor="let j of data[idx].media">
+                  <video width="320" height="240" [poster]="genPoster(j)" preload="none" controls>
+                    <source [src]="genVidUrl(j)"/>
+                    Your browser does not support the video tag.
+                  </video>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-start">
+            <ion-col>
+              <ion-button fill="clear" color="medium" size="small">
+                <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+                {{ i.legacy.reply_count }}
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button fill="clear" [color]="i.retweet_count ? 'primary' : 'medium'" size="small">
+                <ion-icon name="repeat-outline" slot="start"></ion-icon>
+                {{ i.legacy.retweet_count }}
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button fill="clear" [color]="i.favorite_count ? 'primary' : 'medium'" size="small">
+                <ion-icon name="heart-outline" slot="start"></ion-icon>
+                {{ i.legacy.favorite_count }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+       -->
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4" class="ion-text-center">
+          <ion-button (click)="prevPage()">Prev</ion-button>
+        </ion-col>
+        <ion-col size="4" class="ion-text-center">
+          <ion-button (click)="gotoPage()" color="warning">Page</ion-button>
+        </ion-col>
+          <ion-col size="4" class="ion-text-center">
+          <ion-button (click)="nextPage()">Next</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <ng-template #noData>
+    <ion-card>
+      <ion-card-content>Bookmark Empty</ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

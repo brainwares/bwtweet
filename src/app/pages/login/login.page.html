@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>BW Tweet</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form #form="ngForm" (ngSubmit)="tryLogin()">
+        <ion-list>
+          <ion-item>
+            <ion-input type="text" name="username" placeholder="Username" [(ngModel)]="username" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input type="password" name="password" placeholder="Password" [(ngModel)]="password" required></ion-input>
+          </ion-item>
+          <ion-button expand="full" class="no-padding" [disabled]="form.invalid" (click)="tryLogin()">Login</ion-button>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>URLs Page: {{page}} of {{total_pages}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to reload"
+      refreshingSpinner="circles"
+      refreshingText="Reloading...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="data; else noData">
+    <ion-item-sliding *ngFor="let i of data; let idx = index">
+      <ion-item [href]="i.url" [button]="true" (click)="toggleClick(idx)" [color]="idx == itemClicked ? 'success' : ''">
+        <ion-icon name="disc" slot="start"></ion-icon>
+        <ion-label class="ion-text-nowrap">
+          <ion-text>{{i.url}}</ion-text><br>
+          <ion-note color="medium">{{i.created_at}}</ion-note>
+        </ion-label>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="danger" (click)="delUrl(i.id)"><ion-icon slot="icon-only" name="trash"></ion-icon></ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-grid *ngIf="data">
+    <ion-row>
+      <ion-col size="4" class="ion-text-center">
+        <ion-button (click)="prevPage()">Prev</ion-button>
+      </ion-col>
+      <ion-col size="4" class="ion-text-center">
+        <ion-button (click)="gotoPage()" color="warning">Page</ion-button>
+      </ion-col>
+      <ion-col size="4" class="ion-text-center">
+        <ion-button (click)="nextPage()">Next</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ng-template #noData>
+    <ion-card>
+      <ion-card-content>URL Empty</ion-card-content>
+    </ion-card>
+  </ng-template>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addUrlDialog()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
