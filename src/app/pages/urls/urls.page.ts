@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AlertController, IonContent, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { AccessProviders } from 'src/app/providers/access-providers';
 
@@ -10,6 +10,7 @@ import { AccessProviders } from 'src/app/providers/access-providers';
   styleUrls: ['./urls.page.scss'],
 })
 export class UrlsPage implements OnInit {
+  @ViewChild(IonContent) content: IonContent;
   public token;
   public page=1;
   private limit=10;
@@ -51,6 +52,7 @@ export class UrlsPage implements OnInit {
     };
     let body = new HttpParams({fromObject: params});
     this.accsPrvds.token = this.token;
+    this.content.scrollToTop(300);
     return new Promise(resolve => {
       this.accsPrvds.getData('/api/list_url/' + this.limit + '/' + this.page, body).subscribe(
         (res:any) => {
